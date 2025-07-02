@@ -1,5 +1,5 @@
 import User from "../models/user";
-import {connect} from "../mongodb/mongoose";
+import { connect } from "../mongodb/mongoose";
 
 // interface ClerkEmail{
 //     email:string,
@@ -9,28 +9,25 @@ import {connect} from "../mongodb/mongoose";
 //     verification:any
 // };
 
-
-
-
-
 export const createOrUpdateUser = async (
-  id:string,
-  first_name:string,
-  last_name:string,
-  image_url:string,
-  email_addresses:any[]
+  id: string,
+  first_name: string,
+  last_name: string,
+  image_url: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  email_addresses: any[]
 ) => {
   try {
     await connect();
 
     const user = await User.findOneAndUpdate(
-      { clerkId: id }, 
+      { clerkId: id },
       {
         $set: {
           firstName: first_name,
           lastName: last_name,
           profilePicture: image_url,
-          email: email_addresses[0].email, 
+          email: email_addresses[0].email,
         },
       },
       { upsert: true, new: true }
@@ -71,13 +68,11 @@ export const createOrUpdateUser = async (
 //upsert: true If no document matches the filter (clerkId: id), create a new one
 //new: true  After the update, return the updated document, not the original one📒📒
 
-
-export const deleteUser = async(id:string)=>{
-    try{
-        await connect();
-        await User.findOneAndDelete({clerkId:id});
-
-    }catch(error){
-
-    }
-}
+export const deleteUser = async (id: string) => {
+  try {
+    await connect();
+    await User.findOneAndDelete({ clerkId: id });
+  } catch (error) {
+    console.log("Error:", error);
+  }
+};
