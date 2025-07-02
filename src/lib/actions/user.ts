@@ -1,4 +1,3 @@
-import { error } from "console";
 import User from "../models/user";
 import {connect} from "../mongodb/mongoose";
 
