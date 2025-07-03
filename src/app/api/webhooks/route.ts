@@ -1,5 +1,5 @@
 import { Webhook } from "svix";
-import { headers } from "next/headers";
+// import { headers } from "next/headers";
 import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
 import { clerkClient } from "@clerk/nextjs/server";
 
@@ -28,23 +28,24 @@ export async function POST(req: Request) {
 
   const wh = new Webhook(SIGNING_SECRET);
 
-  const headerPayload = await headers();
-  console.log("📦 Incoming headers:");
-  for (const [key, value] of headerPayload.entries()) {
-    console.log(`${key}: ${value}`);
-  }
-  const svix_id = headerPayload.get("svix-id");
-  const svix_timestamp = headerPayload.get("svix-timestamp");
-  const svix_signature = headerPayload.get("svix_signature");
+  // const headerPayload =  headers();
+  // const svix_id = headerPayload.get("svix-id");
+  // const svix_timestamp = headerPayload.get("svix-timestamp");
+  // const svix_signature = headerPayload.get("svix_signature");
+
+  const svix_id = req.headers.get("svix-id") ?? "";
+  const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
+  const svix_signature = req.headers.get("svix-signature") ?? "";
 
   if (!svix_id || !svix_signature || !svix_timestamp) {
-     console.log("Missing headers", { svix_id, svix_signature, svix_timestamp });
+    console.log("Missing headers", { svix_id, svix_signature, svix_timestamp });
     return new Response("Error: Missing svix headers", {
       status: 400,
     });
   }
 
-  const payload = await req.json();
+  // const payload = await req.json();
+  const payload = await req.text();
   const body = JSON.stringify(payload);
 
   let evt: ClerkEvent;
