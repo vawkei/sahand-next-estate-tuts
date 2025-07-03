@@ -4,6 +4,8 @@ import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
+  console.log("🔔 Webhook route hit");
+
   type ClerkEvent = {
     data: {
       id: string;
@@ -27,11 +29,16 @@ export async function POST(req: Request) {
   const wh = new Webhook(SIGNING_SECRET);
 
   const headerPayload = await headers();
+  console.log("📦 Incoming headers:");
+  for (const [key, value] of headerPayload.entries()) {
+    console.log(`${key}: ${value}`);
+  }
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix_signature");
 
   if (!svix_id || !svix_signature || !svix_timestamp) {
+     console.log("Missing headers", { svix_id, svix_signature, svix_timestamp });
     return new Response("Error: Missing svix headers", {
       status: 400,
     });

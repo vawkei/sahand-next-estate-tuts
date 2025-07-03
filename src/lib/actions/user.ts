@@ -18,6 +18,7 @@ export const createOrUpdateUser = async (
   email_addresses: any[]
 ) => {
   try {
+    console.log("About to connect to mongodb...")
     await connect();
 
     const user = await User.findOneAndUpdate(
