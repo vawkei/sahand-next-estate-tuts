@@ -33,16 +33,21 @@ export async function POST(req: Request) {
   // const svix_timestamp = headerPayload.get("svix-timestamp");
   // const svix_signature = headerPayload.get("svix_signature");
 
+
+  console.log("About to run the req.headers....")
   const svix_id = req.headers.get("svix-id") ?? "";
   const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
   const svix_signature = req.headers.get("svix-signature") ?? "";
+    console.log("req.headers retrieved")
 
   if (!svix_id || !svix_signature || !svix_timestamp) {
     console.log("Missing headers", { svix_id, svix_signature, svix_timestamp });
     return new Response("Error: Missing svix headers", {
       status: 400,
     });
-  }
+  };
+
+  console.log("req.headers confirmed...")
 
   // const payload = await req.json();
   const payload = await req.text();
@@ -56,6 +61,7 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
       "svix-timestamp": svix_timestamp,
     }) as ClerkEvent;
+    console.log("This is the evt properties:",evt)
   } catch (error) {
     console.log("Error:Could not verify webhook:", error);
     return new Response("Error:verification error", {
@@ -65,9 +71,11 @@ export async function POST(req: Request) {
 
   const { id } = evt?.data;
   const eventType = evt.type;
+  console.log("this is the eventType:",eventType)
 
   if (eventType === "user.created" || eventType === "user.updated") {
     const { first_name, last_name, image_url, email_addresses } = evt.data;
+    console.log("Ran successfully...")
     try {
       const user = await createOrUpdateUser(
         id,
@@ -76,6 +84,7 @@ export async function POST(req: Request) {
         image_url,
         email_addresses
       );
+      console.log("Ran createOrUpdateUser successfully...")
 
       if (user && eventType === "user.created") {
         try {
@@ -85,6 +94,7 @@ export async function POST(req: Request) {
               userMongoId: user._id,
             },
           });
+          console.log("Ran updateUserMetadata successfully...")
         } catch (error) {
           console.log("Error:Could not update user metadata:", error);
         }
