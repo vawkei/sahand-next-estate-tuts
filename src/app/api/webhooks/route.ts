@@ -50,8 +50,9 @@ export async function POST(req: Request) {
   console.log("req.headers confirmed...")
 
   // const payload = await req.json();
-  const payload = await req.text();
-  const body = JSON.stringify(payload);
+  // const payload = await req.text();
+  // const body = JSON.stringify(payload);
+  const body = await req.text()
 
   let evt: ClerkEvent;
 
