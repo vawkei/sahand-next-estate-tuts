@@ -1,5 +1,4 @@
 import { Webhook } from "svix";
-// import { headers } from "next/headers";
 import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
 import { clerkClient } from "@clerk/nextjs/server";
 
@@ -27,11 +26,6 @@ export async function POST(req: Request) {
   }
 
   const wh = new Webhook(SIGNING_SECRET);
-
-  // const headerPayload =  headers();
-  // const svix_id = headerPayload.get("svix-id");
-  // const svix_timestamp = headerPayload.get("svix-timestamp");
-  // const svix_signature = headerPayload.get("svix_signature");
 
 
   console.log("About to run the req.headers....")
